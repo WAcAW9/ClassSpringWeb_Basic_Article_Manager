@@ -19,7 +19,7 @@ public class Main {
 		
 		// 2. 종료 의사 표시 -> 종료
 		
-		Scanner input = new Scanner(System.in);
+		/*Scanner input = new Scanner(System.in);
 		// 경고 : 자원이 영원히 켜져있음 
 		
 		System.out.println("== 프로그램 시작 ==");
@@ -48,6 +48,52 @@ public class Main {
 		input.close();
 
 		System.out.println("== 프로그램 끝 ==");
+		*/
 		
+		//3. 게시글 작성과 입출력
+		// 동적 메모리 할당, switch-case문
+		
+		Scanner sc = new Scanner(System.in);
+		//String[] article = new String[][];
+		int lastArticleId = 0;
+		
+		System.out.println("== 프로그램 시작 ==");
+		
+		while(true) {
+			System.out.print("명령어)");
+			String cmd = sc.nextLine().trim(); //앞뒤 공백 제거
+			
+			// 0) 종료 명령어
+			if(cmd.equals("exit")) break;
+			
+			// 1) 공백 입력
+			// nextLine() return 타입 검증 필요(null,"")
+			if(cmd.equals("")) { //cmd.length()==0 => 공백 확인 가능
+				System.out.println("명령어를 입력해주세요");
+				continue;
+			}
+			
+			// 2) 게시글 입력 명령어
+			if(cmd.equals("article write")) {
+				System.out.print("제목 : ");
+				sc.nextLine();
+				System.out.print("내용 : ");
+				sc.nextLine();
+				
+				System.out.println(++lastArticleId + "번 글이 생성되었습니다");
+			}
+			// 3) 게시글 출력 명령어
+			else if(cmd.equals("article list")) {
+				System.out.println("게시글이 없습니다");
+			}
+			// 4) 정의되지 않은 명령어
+			else {
+				System.out.println("존재하지 않는 명령어입니다.");
+			}
+			
+		} //while
+		
+		sc.close();
+		System.out.println("== 프로그램 종료 ==");
 	}
 }
