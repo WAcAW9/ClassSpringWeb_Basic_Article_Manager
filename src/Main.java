@@ -95,7 +95,45 @@ public class Main {
 				System.out.printf("내용: %s\n",foundArticle.body);
 				
 			}
-			// 5) 정의되지 않은 명령어
+			// 5) 게시물 삭제하기
+			else if(cmd.startsWith("article delete ")) { // 뒤에 띄어쓰기 필수
+				// 명령어 분해
+				String[] cmdBits = cmd.split(" "); //공백 마다 자르기 -> 단어별로 배열 원소로 저장
+				
+				int id=0;
+				
+				// 예외처리
+				try {
+					id=Integer.parseInt(cmdBits[2]);
+				}catch(NumberFormatException e) {
+					System.out.println("명령어가 올바르지 않습니다.");
+					continue;
+				}
+				catch(Exception e) {
+					System.out.println("error : "+ e);
+				}
+				
+				// 게시물 찾기(순회)
+				
+				Article foundArticle = null;
+				
+				for(Article article : articles) {
+					if(id == article.id) { // 데이터 무결성 -> 타입변환 주의
+						foundArticle = article;
+						break;
+					}
+				}
+				
+				if(foundArticle ==null) {
+					System.out.println(id+"번 게시물은 존재하지 않습니다.");
+					continue;
+				}
+				
+				articles.remove(foundArticle);
+				System.out.println(id+"번 게시물을 삭제했습니다.");
+				
+			}
+			// 6) 정의되지 않은 명령어
 			else {
 				System.out.println("존재하지 않는 명령어입니다.");
 			}
