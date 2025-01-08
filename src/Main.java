@@ -3,8 +3,6 @@ import java.util.*;
 public class Main {
 	public static void main(String[] args) {
 		
-		//5. 게시글 상세보기
-		// substring, split, startWith
 		Scanner sc = new Scanner(System.in);
 		
 		int lastArticleId = 0;
@@ -36,7 +34,7 @@ public class Main {
 				
 				lastArticleId++;
 				
-				Article article = new Article(lastArticleId,Util.getDateStr(),title,body);
+				Article article = new Article(lastArticleId,Util.getDateStr(),title,body,0);
 				articles.add(article);
 				
 				System.out.println(lastArticleId + "번 글이 생성되었습니다");
@@ -49,9 +47,9 @@ public class Main {
 					continue;
 				}
 				// 게시물이 존재하는 경우
-				System.out.println("번호 | 제목 | 작성일");
+				System.out.println("번호 |    제목    | 조회수 |   작성일");
 				for(int i=articles.size()-1;i>=0;i--) {
-					System.out.printf("%d   |   %s   | %s\n",articles.get(i).id,articles.get(i).title,articles.get(i).regDate);
+					System.out.printf("%d   |   %s   |  %d  |%s\n",articles.get(i).id,articles.get(i).title,articles.get(i).viewCnt,articles.get(i).regDate);
 				
 				}
 				
@@ -90,10 +88,13 @@ public class Main {
 					continue;
 				}
 				
+				foundArticle.viewCnt++;
+				
 				System.out.printf("번호: %d\n",foundArticle.id);
-				System.out.printf("작성일: %d\n",foundArticle.regDate);
+				System.out.printf("작성일: %s\n",foundArticle.regDate);
 				System.out.printf("제목: %s\n",foundArticle.title);
 				System.out.printf("내용: %s\n",foundArticle.body);
+				System.out.printf("조회수: %d\n",foundArticle.viewCnt);
 				
 			}
 			// 5) 게시물 수정하기
@@ -193,11 +194,13 @@ class Article{
 	String regDate;
 	String title;
 	String body;
+	int viewCnt;
 	
-	public Article(int id,String regDate, String title, String body) {
+	public Article(int id,String regDate, String title, String body,int viewCnt) {
 		this.id=id;
 		this.regDate = regDate;
 		this.title=title;
 		this.body=body;
+		this.viewCnt=viewCnt;
 	}
 }
