@@ -36,7 +36,7 @@ public class Main {
 				
 				lastArticleId++;
 				
-				Article article = new Article(lastArticleId,title,body);
+				Article article = new Article(lastArticleId,Util.getDateStr(),title,body);
 				articles.add(article);
 				
 				System.out.println(lastArticleId + "번 글이 생성되었습니다");
@@ -49,9 +49,9 @@ public class Main {
 					continue;
 				}
 				// 게시물이 존재하는 경우
-				System.out.println("번호 | 제목");
+				System.out.println("번호 | 제목 | 작성일");
 				for(int i=articles.size()-1;i>=0;i--) {
-					System.out.printf("%d   |   %s\n",articles.get(i).id,articles.get(i).title);
+					System.out.printf("%d   |   %s   | %s\n",articles.get(i).id,articles.get(i).title,articles.get(i).regDate);
 				
 				}
 				
@@ -91,6 +91,7 @@ public class Main {
 				}
 				
 				System.out.printf("번호: %d\n",foundArticle.id);
+				System.out.printf("작성일: %d\n",foundArticle.regDate);
 				System.out.printf("제목: %s\n",foundArticle.title);
 				System.out.printf("내용: %s\n",foundArticle.body);
 				
@@ -189,11 +190,13 @@ public class Main {
 
 class Article{
 	int id;
+	String regDate;
 	String title;
 	String body;
 	
-	public Article(int id, String title, String body) {
+	public Article(int id,String regDate, String title, String body) {
 		this.id=id;
+		this.regDate = regDate;
 		this.title=title;
 		this.body=body;
 	}
