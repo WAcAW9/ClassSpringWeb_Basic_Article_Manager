@@ -50,16 +50,41 @@ public class Main {
 				System.out.println(lastArticleId + "번 글이 생성되었습니다");
 			}
 			// 3) 게시글 출력 명령어
-			else if(cmd.equals("article list")) {
+			else if(cmd.startsWith("article list")) {
 				// 게시물이 존재하지 않는 경우
 				if(articles.size()==0) {
 					System.out.println("게시글이 없습니다");		
 					continue;
 				}
+				
+				// 3-1) 게시글 검색
+				// 백업
+				List<Article> printArticles = articles;
+				
+				String searchKeyword=cmd.substring("article list".length()).trim();
+	
+				// 검색어가 있는 경우
+				if(searchKeyword.length()>0) {
+					System.out.println("검색어 : "+ searchKeyword);					
+					printArticles = new ArrayList<>();
+					// 검색어 포함 게시물 찾기
+					for(Article article : articles) {
+						if(article.title.contains(searchKeyword)) {
+							printArticles.add(article);
+						}
+					}
+					// 검색어 포함 게시물 없는 경우
+					if(printArticles.size()==0) {
+						System.out.println("검색 결과가 없습니다.");
+						continue;
+					}
+				}
+				
 				// 게시물이 존재하는 경우
 				System.out.println("번호 |    제목    | 조회수 |   작성일");
-				for(int i=articles.size()-1;i>=0;i--) {
-					System.out.printf("%d   |   %s   |  %d  |%s\n",articles.get(i).id,articles.get(i).title,articles.get(i).viewCnt,articles.get(i).regDate);
+				for(int i=printArticles.size()-1;i>=0;i--) {
+					Article article = printArticles.get(i);
+					System.out.printf("%d   |   %s   |  %d  |%s\n",article.id,article.title,article.viewCnt,article.regDate);
 				
 				}
 				
