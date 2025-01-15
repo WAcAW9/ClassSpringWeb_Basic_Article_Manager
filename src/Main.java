@@ -1,20 +1,30 @@
 import java.util.*;
 
 public class Main {
+	
+//	전역변수
+	static int lastArticleId = 0;
+	static List<Article> articles = new ArrayList<>();
+	
+//	static 초기화 블럭
+	static {
+		lastArticleId = 0;
+		articles = new ArrayList<>();
+	}
+	
 	public static void main(String[] args) {
 		
 		Scanner sc = new Scanner(System.in);
 		
-		int lastArticleId = 0;
-
-		List<Article> articles = new ArrayList<>();
+		System.out.println("== 프로그램 시작 ==");		
 		
-		System.out.println("== 프로그램 시작 ==");
+		maskeTestData();  // 접근 제한자 private static void makeTestData(){}
 		
 		while(true) {
 			System.out.print("명령어)");
 			String cmd = sc.nextLine().trim();
 			
+
 			// 0) 종료 명령어
 			if(cmd.equals("exit")) break;
 			
@@ -185,6 +195,16 @@ public class Main {
 		sc.close();
 		System.out.println("== 프로그램 종료 ==");
 		
+		
+	}
+
+	private static void maskeTestData() {
+		// TODO Auto-generated method stub
+		// test Data
+		System.out.println("태스트용 대이터 3개를 생성했습니다");
+		for(int i=1;i<=3;i++) {
+			articles.add(new Article(++lastArticleId,Util.getDateStr(),"제목"+i,"내용"+i,i*10));
+		}
 		
 	}
 }
