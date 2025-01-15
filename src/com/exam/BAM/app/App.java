@@ -1,24 +1,28 @@
-import java.util.*;
+package com.exam.BAM.app;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 
-public class Main {
+import com.exam.BAM.util.Util;
+import com.exam.BAM.dto.Article;
+
+public class App {
 	
-//	전역변수
-	static int lastArticleId = 0;
-	static List<Article> articles = new ArrayList<>();
+	//	전역변수
+	private int lastArticleId;
+	private List<Article> articles;
 	
-//	static 초기화 블럭
-	static {
-		lastArticleId = 0;
-		articles = new ArrayList<>();
+	public App(){
+		this.lastArticleId = 0;
+		this.articles = new ArrayList<>();
 	}
 	
-	public static void main(String[] args) {
-		
+	public void run() {
 		Scanner sc = new Scanner(System.in);
 		
 		System.out.println("== 프로그램 시작 ==");		
 		
-		maskeTestData();  // 접근 제한자 private static void makeTestData(){}
+		makeTestData();  // 접근 제한자 private static void makeTestData(){}
 		
 		while(true) {
 			System.out.print("명령어)");
@@ -69,7 +73,7 @@ public class Main {
 					printArticles = new ArrayList<>();
 					// 검색어 포함 게시물 찾기
 					for(Article article : articles) {
-						if(article.title.contains(searchKeyword)) {
+						if(article.getTitle().contains(searchKeyword)) {
 							printArticles.add(article);
 						}
 					}
@@ -84,7 +88,7 @@ public class Main {
 				System.out.println("번호 |    제목    | 조회수 |   작성일");
 				for(int i=printArticles.size()-1;i>=0;i--) {
 					Article article = printArticles.get(i);
-					System.out.printf("%d   |   %s   |  %d  |%s\n",article.id,article.title,article.viewCnt,article.regDate);
+					System.out.printf("%d   |   %s   |  %d  |%s\n",article.getId(),article.getTitle(),article.getViewCnt(),article.getRegDate());
 				
 				}
 				
@@ -112,7 +116,7 @@ public class Main {
 				Article foundArticle = null;
 				
 				for(Article article : articles) {
-					if(id == article.id) { // 데이터 무결성 -> 타입변환 주의
+					if(id == article.getId()) { // 데이터 무결성 -> 타입변환 주의
 						foundArticle = article;
 						break;
 					}
@@ -123,13 +127,13 @@ public class Main {
 					continue;
 				}
 				
-				foundArticle.viewCnt++;
+				foundArticle.increaseViewCnt();
 				
-				System.out.printf("번호: %d\n",foundArticle.id);
-				System.out.printf("작성일: %s\n",foundArticle.regDate);
-				System.out.printf("제목: %s\n",foundArticle.title);
-				System.out.printf("내용: %s\n",foundArticle.body);
-				System.out.printf("조회수: %d\n",foundArticle.viewCnt);
+				System.out.printf("번호: %d\n",foundArticle.getId());
+				System.out.printf("작성일: %s\n",foundArticle.getRegDate());
+				System.out.printf("제목: %s\n",foundArticle.getTitle());
+				System.out.printf("내용: %s\n",foundArticle.getBody());
+				System.out.printf("조회수: %d\n",foundArticle.getViewCnt());
 				
 			}
 			// 5) 게시물 수정하기
@@ -153,7 +157,7 @@ public class Main {
 				// 게시물 찾기(순회)
 				Article foundArticle = null;
 				for(Article article : articles) {
-					if(id == article.id) { // 데이터 무결성 -> 타입변환 주의
+					if(id == article.getId()) { // 데이터 무결성 -> 타입변환 주의
 						foundArticle = article;
 						break;
 					}
@@ -170,8 +174,8 @@ public class Main {
 				String body = sc.nextLine();
 				
 				// 입력받은 내용으로 값 수정
-				foundArticle.title=title;
-				foundArticle.body=body;
+				foundArticle.setTitle(title);
+				foundArticle.setBody(body);
 				
 				System.out.println(id+"번 게시물을 수정했습니다.");
 			}
@@ -197,7 +201,7 @@ public class Main {
 				// 게시물 찾기(순회)
 				Article foundArticle = null;
 				for(Article article : articles) {
-					if(id == article.id) { // 데이터 무결성 -> 타입변환 주의
+					if(id == article.getId()) { // 데이터 무결성 -> 타입변환 주의
 						foundArticle = article;
 						break;
 					}
@@ -219,33 +223,14 @@ public class Main {
 		
 		sc.close();
 		System.out.println("== 프로그램 종료 ==");
-		
-		
 	}
-
-	private static void maskeTestData() {
-		// TODO Auto-generated method stub
+	
+	private void makeTestData() {
 		// test Data
 		System.out.println("태스트용 대이터 3개를 생성했습니다");
 		for(int i=1;i<=3;i++) {
 			articles.add(new Article(++lastArticleId,Util.getDateStr(),"제목"+i,"내용"+i,i*10));
 		}
 		
-	}
-}
-
-class Article{
-	int id;
-	String regDate;
-	String title;
-	String body;
-	int viewCnt;
-	
-	public Article(int id,String regDate, String title, String body,int viewCnt) {
-		this.id=id;
-		this.regDate = regDate;
-		this.title=title;
-		this.body=body;
-		this.viewCnt=viewCnt;
 	}
 }
