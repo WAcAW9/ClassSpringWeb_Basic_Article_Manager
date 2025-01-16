@@ -112,7 +112,6 @@ public class App {
 					break;
 				}
 				
-				
 				lastMemberId++;
 				
 				Member member = new Member(lastMemberId,Util.getDateStr(),loginId,loginPw,name);
@@ -178,38 +177,22 @@ public class App {
 			}
 			// 5) 게시물 상새보기
 			else if(cmd.startsWith("article detail ")) { // 뒤에 띄어쓰기 필수
-				// 명령어 분해
-				String[] cmdBits = cmd.split(" "); //공백 마다 자르기 -> 단어별로 배열 원소로 저장
 				
-				int id=0;
+				// 명령어 오류 검출
+				int id = getIdByCmd(cmd);
 				
-				// 예외처리
-				try {
-					id=Integer.parseInt(cmdBits[2]);
-				}catch(NumberFormatException e) {
+				if(id==0) {
 					System.out.println("명령어가 올바르지 않습니다.");
 					continue;
 				}
-				catch(Exception e) {
-					System.out.println("error : "+ e);
-				}
 				
 				// 게시물 찾기(순회)
-				
-				Article foundArticle = null;
-				
-				for(Article article : articles) {
-					if(id == article.getId()) { // 데이터 무결성 -> 타입변환 주의
-						foundArticle = article;
-						break;
-					}
-				}
+				Article foundArticle = getArticlebyId(id);
 				
 				if(foundArticle ==null) {
-					System.out.println(id+"번 게시물은 존재하지 않습니다.");
 					continue;
 				}
-				
+			
 				foundArticle.increaseViewCnt();
 				
 				System.out.printf("번호: %d\n",foundArticle.getId());
@@ -221,32 +204,19 @@ public class App {
 			}
 			// 6) 게시물 수정하기
 			else if(cmd.startsWith("article modify ")) { // 뒤에 띄어쓰기 필수
-				// 명령어 분해
-				String[] cmdBits = cmd.split(" "); //공백 마다 자르기 -> 단어별로 배열 원소로 저장
 				
-				int id=0;
+				// 명령어 오류 검출
+				int id = getIdByCmd(cmd);
 				
-				// 예외처리
-				try {
-					id=Integer.parseInt(cmdBits[2]);
-				}catch(NumberFormatException e) {
+				if(id==0) {
 					System.out.println("명령어가 올바르지 않습니다.");
 					continue;
 				}
-				catch(Exception e) {
-					System.out.println("error : "+ e);
-				}
 				
 				// 게시물 찾기(순회)
-				Article foundArticle = null;
-				for(Article article : articles) {
-					if(id == article.getId()) { // 데이터 무결성 -> 타입변환 주의
-						foundArticle = article;
-						break;
-					}
-				}
+				Article foundArticle = getArticlebyId(id);
+				
 				if(foundArticle ==null) {
-					System.out.println(id+"번 게시물은 존재하지 않습니다.");
 					continue;
 				}
 				
@@ -265,34 +235,22 @@ public class App {
 			
 			// 7) 게시물 삭제하기
 			else if(cmd.startsWith("article delete ")) { // 뒤에 띄어쓰기 필수
-				// 명령어 분해
-				String[] cmdBits = cmd.split(" "); //공백 마다 자르기 -> 단어별로 배열 원소로 저장
 				
-				int id=0;
+				// 명령어 오류 검출
+				int id = getIdByCmd(cmd);
 				
-				// 예외처리
-				try {
-					id=Integer.parseInt(cmdBits[2]);
-				}catch(NumberFormatException e) {
+				if(id==0) {
 					System.out.println("명령어가 올바르지 않습니다.");
 					continue;
 				}
-				catch(Exception e) {
-					System.out.println("error : "+ e);
-				}
 				
 				// 게시물 찾기(순회)
-				Article foundArticle = null;
-				for(Article article : articles) {
-					if(id == article.getId()) { // 데이터 무결성 -> 타입변환 주의
-						foundArticle = article;
-						break;
-					}
-				}
+				Article foundArticle = getArticlebyId(id);
+				
 				if(foundArticle ==null) {
-					System.out.println(id+"번 게시물은 존재하지 않습니다.");
 					continue;
 				}
+				
 				articles.remove(foundArticle);
 				System.out.println(id+"번 게시물을 삭제했습니다.");
 			}
@@ -308,11 +266,38 @@ public class App {
 		System.out.println("== 프로그램 종료 ==");
 	}
 	
+	private int getIdByCmd(String cmd) {
+		
+		String[] cmdBits = cmd.split(" "); //공백 마다 자르기 -> 단어별로 배열 원소로 저장
+		
+		// 예외처리
+		try {
+			int id=Integer.parseInt(cmdBits[2]);
+			return id;
+		}catch(NumberFormatException e) {
+			return 0;
+		}
+	}
+
+	private Article getArticlebyId(int id) {
+
+		for(Article article : articles) {
+			if(id == article.getId()) { // 데이터 무결성 -> 타입변환 주의
+				return article;
+			}
+		}	
+		System.out.println(id+"번 게시물은 존재하지 않습니다.");
+		return null;
+		
+	}
+
 	private void makeTestData() {
 		// test Data
-		System.out.println("태스트용 대이터 3개를 생성했습니다");
+		System.out.println("태스트용 데이터 3개를 생성했습니다");
+		System.out.println("태스트용 회원 3개를 생성했습니다");
 		for(int i=1;i<=3;i++) {
 			articles.add(new Article(++lastArticleId,Util.getDateStr(),"제목"+i,"내용"+i,i*10));
+			members.add(new Member(++lastMemberId,Util.getDateStr(),"test"+i,"test"+i,"user"+i));
 		}
 		
 	}
