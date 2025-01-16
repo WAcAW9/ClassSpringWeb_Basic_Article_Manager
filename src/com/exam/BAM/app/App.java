@@ -5,16 +5,21 @@ import java.util.Scanner;
 
 import com.exam.BAM.util.Util;
 import com.exam.BAM.dto.Article;
+import com.exam.BAM.dto.Member;
 
 public class App {
 	
 	//	전역변수
 	private int lastArticleId;
 	private List<Article> articles;
+	private int lastMemberId;
+	private List<Member> members;
 	
 	public App(){
 		this.lastArticleId = 0;
 		this.articles = new ArrayList<>();
+		this.lastMemberId = 0;
+		this.members = new ArrayList<>();
 	}
 	
 	public void run() {
@@ -38,8 +43,86 @@ public class App {
 				continue;
 			}
 			
-			// 2) 게시글 입력 명령어
-			if(cmd.equals("article write")) {
+			// 2) 회원가입 기능
+			if(cmd.equals("member join")) {
+
+				String loginId=null;
+				String loginPw=null;
+				String name = null;
+				
+				// 아이디 중복 확인 검증
+				while(true) {
+					
+					System.out.print("아이디 : ");
+					loginId = sc.nextLine().trim();
+					
+					boolean isLoginIdDup = false;
+					
+					if(loginId.length()==0) {
+						System.out.println("아이디는 필수 입력 정보입니다.");
+						continue;
+					}
+					
+					for(Member member : members) {
+						if(loginId.equals(member.getLoginId())) {
+							isLoginIdDup = true;
+							break;
+						}
+					}
+					if(isLoginIdDup) {
+						System.out.printf("[ %s ]은(는) 이미 사용중인 아이디입니다.\n",loginId);
+						continue;
+					}
+					System.out.println("이 아이디는 사용 가능합니다.");
+					break;
+					
+				}
+				
+				
+				// 비밀번호 확인 검증
+				while(true) {
+					System.out.print("비밀번호 : ");
+					loginPw = sc.nextLine().trim();
+					
+					if(loginPw.length()==0) {
+						System.out.println("비밀번호는 필수 입력 정보입니다.");
+						continue;
+					}
+					
+					System.out.print("비밀번호 확인 : ");
+					String loginPwChk = sc.nextLine();
+					
+					if(loginPw.equals(loginPwChk)==false) {
+						System.out.println("비밀번호가 일치하지 않습니다.");
+						continue;
+					}	
+					break;
+					
+				}
+				
+				// 필수 입력 정보(공백 검증)
+				while(true) {
+					System.out.print("이름 : ");
+					name = sc.nextLine().trim();
+					
+					if(name.length()==0) {
+						System.out.println("이름은 필수 입력 정보입니다.");
+						continue;
+					}
+					break;
+				}
+				
+				
+				lastMemberId++;
+				
+				Member member = new Member(lastMemberId,Util.getDateStr(),loginId,loginPw,name);
+				members.add(member);
+				
+				System.out.println(name+"님이 가입되었습니다.");
+			}
+			
+			// 3) 게시글 입력 명령어
+			else if(cmd.equals("article write")) {
 
 				System.out.print("제목 : ");
 				String title = sc.nextLine();
@@ -53,7 +136,7 @@ public class App {
 				
 				System.out.println(lastArticleId + "번 글이 생성되었습니다");
 			}
-			// 3) 게시글 출력 명령어
+			// 4) 게시글 출력 명령어
 			else if(cmd.startsWith("article list")) {
 				// 게시물이 존재하지 않는 경우
 				if(articles.size()==0) {
@@ -61,7 +144,7 @@ public class App {
 					continue;
 				}
 				
-				// 3-1) 게시글 검색
+				// 4-1) 게시글 검색
 				// 백업
 				List<Article> printArticles = articles;
 				
@@ -93,7 +176,7 @@ public class App {
 				}
 				
 			}
-			// 4) 게시물 상새보기
+			// 5) 게시물 상새보기
 			else if(cmd.startsWith("article detail ")) { // 뒤에 띄어쓰기 필수
 				// 명령어 분해
 				String[] cmdBits = cmd.split(" "); //공백 마다 자르기 -> 단어별로 배열 원소로 저장
@@ -136,7 +219,7 @@ public class App {
 				System.out.printf("조회수: %d\n",foundArticle.getViewCnt());
 				
 			}
-			// 5) 게시물 수정하기
+			// 6) 게시물 수정하기
 			else if(cmd.startsWith("article modify ")) { // 뒤에 띄어쓰기 필수
 				// 명령어 분해
 				String[] cmdBits = cmd.split(" "); //공백 마다 자르기 -> 단어별로 배열 원소로 저장
@@ -180,7 +263,7 @@ public class App {
 				System.out.println(id+"번 게시물을 수정했습니다.");
 			}
 			
-			// 6) 게시물 삭제하기
+			// 7) 게시물 삭제하기
 			else if(cmd.startsWith("article delete ")) { // 뒤에 띄어쓰기 필수
 				// 명령어 분해
 				String[] cmdBits = cmd.split(" "); //공백 마다 자르기 -> 단어별로 배열 원소로 저장
@@ -214,7 +297,7 @@ public class App {
 				System.out.println(id+"번 게시물을 삭제했습니다.");
 			}
 			
-			// 7) 정의되지 않은 명령어
+			// 8) 정의되지 않은 명령어
 			else {
 				System.out.println("존재하지 않는 명령어입니다.");
 			}
