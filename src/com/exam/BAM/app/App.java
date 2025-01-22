@@ -48,6 +48,27 @@ public class App {
 			// member join -> [0]member, [1]join
 			String controllerName = cmd.split(" ")[0];
 			String methodName = cmd.split(" ")[1];
+
+			// 명령어 판단 (로그인 필수, 로그아웃 필수)
+			switch(methodName) {
+				case "write":
+				case "delete":
+				case "modify":
+				case "logout":
+					if(Controller.loginedMember==null) {
+						System.out.println("로그인이 필요합니다");
+						continue;
+					}
+					break;	
+				case "join":
+				case "login":
+					if(Controller.loginedMember!=null) {
+						System.out.println("로그아웃이 필요합니다");
+						continue;
+					}
+				default:
+					break;
+			}
 			
 			Controller controller = null;
 			

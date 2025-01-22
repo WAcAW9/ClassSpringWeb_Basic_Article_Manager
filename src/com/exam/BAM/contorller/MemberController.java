@@ -109,12 +109,6 @@ public class MemberController extends Controller{
 	
 	private void doLogin() {
 		
-		// 로그인 되어 있다면
-		if(loginedMember != null) {
-			System.out.println("이미 로그인 되어있습니다");
-			return;
-		}
-		
 		System.out.print("아이디 : ");
 		String loginId = sc.nextLine().trim();
 		System.out.print("비밀번호 : ");
@@ -158,10 +152,7 @@ public class MemberController extends Controller{
 	}
 
 	private void doLogout() {
-		if (loginedMember ==null) {
-			System.out.println("로그인 되어 있지 않습니다");
-			return;
-		}
+
 		loginedMember=null;
 		System.out.println("정상적으로 로그아웃되었습니다");
 	}

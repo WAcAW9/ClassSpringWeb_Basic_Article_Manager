@@ -47,12 +47,7 @@ public class ArticleController extends Controller{
 	
 	private void doWrite() {
 		
-		// 로그인 안되어 있으면
-		if(loginedMember == null) {
-			System.out.println("로그인이 되어 있지 않습니다");
-			return;
-		}
-		
+
 		System.out.print("제목 : ");
 		String title = sc.nextLine();
 		System.out.print("내용 : ");
@@ -153,11 +148,7 @@ public class ArticleController extends Controller{
 	
 
 	private void doModify() {
-		// 로그인 안되어 있으면
-		if(loginedMember == null) {
-			System.out.println("로그인이 되어 있지 않습니다");
-			return;
-		}
+
 		// 명령어 오류 검출
 		int id = getIdByCmd(cmd);
 		
@@ -194,11 +185,7 @@ public class ArticleController extends Controller{
 	}
 
 	private void doDelete() {
-		// 로그인 안되어 있으면
-		if(loginedMember == null) {
-			System.out.println("로그인이 되어 있지 않습니다");
-			return;
-		}
+
 		// 명령어 오류 검출
 		int id = getIdByCmd(cmd);
 		
