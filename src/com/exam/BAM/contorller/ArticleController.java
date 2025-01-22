@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import com.exam.BAM.container.Container;
 import com.exam.BAM.dto.Article;
 import com.exam.BAM.dto.Member;
 import com.exam.BAM.util.Util;
@@ -15,7 +16,7 @@ public class ArticleController extends Controller{
 	public ArticleController(Scanner sc) {
 		this.sc = sc;
 		this.lastId = 0;
-		this.articles = new ArrayList<>();
+		this.articles = Container.articles;
 	}
 
 	@Override
@@ -45,6 +46,13 @@ public class ArticleController extends Controller{
 	}
 	
 	private void doWrite() {
+		
+		// 로그인 안되어 있으면
+		if(loginedMember == null) {
+			System.out.println("로그인이 되어 있지 않습니다");
+			return;
+		}
+		
 		System.out.print("제목 : ");
 		String title = sc.nextLine();
 		System.out.print("내용 : ");
@@ -52,8 +60,9 @@ public class ArticleController extends Controller{
 		
 		lastId++;
 		
-		Article article = new Article(lastId,Util.getDateStr(),title,body,0);
+		Article article = new Article(lastId,Util.getDateStr(),loginedMember.getId(),title,body,0);
 		articles.add(article);
+		
 		
 		System.out.println(lastId + "번 글이 생성되었습니다");
 		
@@ -89,17 +98,24 @@ public class ArticleController extends Controller{
 			}
 		}
 		
+	
+		
 		// 게시물이 존재하는 경우
-		System.out.println("번호 |    제목    | 조회수 |   작성일");
+		System.out.println("번호 |   제목    | 조회수 |작성자|   작성일");
 		for(int i=printArticles.size()-1;i>=0;i--) {
 			Article article = printArticles.get(i);
-			System.out.printf("%d   |   %s   |  %d  |%s\n",article.getId(),article.getTitle(),article.getViewCnt(),article.getRegDate());
+			
+			// 순회하며 작성자 번호와 일치한 회원의 loginId 가져오기
+			String writerName = getWriterName(article.getMemberId());
+			
+			System.out.printf("%d   |   %s   |  %s  |  %s  |%s\n",article.getId(),article.getTitle(),article.getViewCnt(),writerName,article.getRegDate());
 		}
 	}
 
 
 
 	private void showDetail() {
+			
 		// 명령어 오류 검출
 		int id = getIdByCmd(cmd);
 		
@@ -117,8 +133,16 @@ public class ArticleController extends Controller{
 	
 		foundArticle.increaseViewCnt();
 		
+		
+		
+		// 순회하며 작성자 번호와 일치한 회원의 loginId 가져오기
+		String writerName = getWriterName(foundArticle.getMemberId());
+		
+		
+		
 		System.out.printf("번호: %d\n",foundArticle.getId());
 		System.out.printf("작성일: %s\n",foundArticle.getRegDate());
+		System.out.printf("작성자: %s\n",writerName);
 		System.out.printf("제목: %s\n",foundArticle.getTitle());
 		System.out.printf("내용: %s\n",foundArticle.getBody());
 		System.out.printf("조회수: %d\n",foundArticle.getViewCnt());
@@ -126,7 +150,14 @@ public class ArticleController extends Controller{
 		
 	}
 
+	
+
 	private void doModify() {
+		// 로그인 안되어 있으면
+		if(loginedMember == null) {
+			System.out.println("로그인이 되어 있지 않습니다");
+			return;
+		}
 		// 명령어 오류 검출
 		int id = getIdByCmd(cmd);
 		
@@ -139,6 +170,12 @@ public class ArticleController extends Controller{
 		Article foundArticle = getArticlebyId(id);
 		
 		if(foundArticle ==null) {
+			return;
+		}
+		
+		// 권한 체크
+		if(loginedMember.getId()!=foundArticle.getMemberId()) {
+			System.out.println("해당 게시물에 대한 권한이 없습니다");
 			return;
 		}
 		
@@ -157,6 +194,11 @@ public class ArticleController extends Controller{
 	}
 
 	private void doDelete() {
+		// 로그인 안되어 있으면
+		if(loginedMember == null) {
+			System.out.println("로그인이 되어 있지 않습니다");
+			return;
+		}
 		// 명령어 오류 검출
 		int id = getIdByCmd(cmd);
 		
@@ -172,9 +214,24 @@ public class ArticleController extends Controller{
 			return;
 		}
 		
+		// 권한 체크
+		if(loginedMember.getId()!=foundArticle.getMemberId()) {
+			System.out.println("해당 게시물에 대한 권한이 없습니다");
+			return;
+		}
+		
 		articles.remove(foundArticle);
 		System.out.println(id+"번 게시물을 삭제했습니다.");
 		
+	}
+	
+	private String getWriterName(int memberId) {
+		for(Member member : Container.members) {
+			if(memberId == member.getId()) {
+				return member.getName();
+			}
+		}
+		return null;
 	}
 	
 	private int getIdByCmd(String cmd) {
@@ -209,7 +266,7 @@ public class ArticleController extends Controller{
 		// test Data
 		System.out.println("태스트용 데이터 3개를 생성했습니다");
 		for(int i=1;i<=3;i++) {
-			articles.add(new Article(++lastId,Util.getDateStr(),"제목"+i,"내용"+i,i*10));
+			articles.add(new Article(++lastId,Util.getDateStr(),(int)(Math.random()*3)+1,"제목"+i,"내용"+i,i*10));
 		}
 		
 	}
