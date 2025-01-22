@@ -5,6 +5,7 @@ import java.util.Scanner;
 
 import com.exam.BAM.util.Util;
 import com.exam.BAM.contorller.ArticleController;
+import com.exam.BAM.contorller.Controller;
 import com.exam.BAM.contorller.MemberController;
 import com.exam.BAM.dto.Article;
 import com.exam.BAM.dto.Member;
@@ -18,9 +19,9 @@ public class App {
 		System.out.println("== 프로그램 시작 ==");		
 		
 		MemberController memberController = new MemberController(sc);
-		memberController.makeTestData();
-		
 		ArticleController articleController = new ArticleController(sc);
+		
+		memberController.makeTestData();
 		articleController.makeTestData();
 		
 		while(true) {
@@ -34,34 +35,22 @@ public class App {
 				System.out.println("명령어를 입력해주세요");
 				continue;
 			}
-			// 2) 회원가입 기능
-			if(cmd.equals("member join")) {
-				memberController.doJoin();
+			
+			// 명령어 분리
+			String[] cmdBits = cmd.split(" ");
+			
+			// ex) 명령어 : articledetail
+			if(cmdBits.length<2) {
+				System.out.println("존재하지 않는 명령어입니다");
+				continue;
 			}
-			// 3) 게시글 입력 명령어
-			else if(cmd.equals("article write")) {
-				articleController.doWrite();
-			}
-			// 4) 게시글 출력 명령어
-			else if(cmd.startsWith("article list")) {
-				articleController.showList(cmd);
-			}
-			// 5) 게시물 상새보기
-			else if(cmd.startsWith("article detail ")) { // 뒤에 띄어쓰기 필수
-				articleController.showDetail(cmd);
-			}
-			// 6) 게시물 수정하기
-			else if(cmd.startsWith("article modify ")) { // 뒤에 띄어쓰기 필수
-				articleController.doModify(cmd);
-			}
-			// 7) 게시물 삭제하기
-			else if(cmd.startsWith("article delete ")) { // 뒤에 띄어쓰기 필수
-				articleController.doDelete(cmd);
-			}
-			// 8) 정의되지 않은 명령어
-			else {
-				System.out.println("존재하지 않는 명령어입니다.");
-			}
+			
+			// member join -> [0]member, [1]join
+			String controllerName = cmd.split(" ")[0];
+			String methodName = cmd.split(" ")[1];
+			
+			Controller controller = null;
+			
 		} //while
 		
 		sc.close();

@@ -8,19 +8,31 @@ import com.exam.BAM.dto.Article;
 import com.exam.BAM.dto.Member;
 import com.exam.BAM.util.Util;
 
-public class MemberController {
+public class MemberController extends Controller{
 	
-	private Scanner sc;
-	private int lastMemberId;
 	private List<Member> members;
 	
 	public MemberController(Scanner sc) {
 		this.sc = sc;
-		this.lastMemberId = 0;
+		this.lastId = 0;
 		this.members = new ArrayList<>();
 	}
 
-	public void doJoin() {
+	@Override
+	public void doAction(String cmd, String methodName) {
+		this.cmd = cmd;
+		switch(methodName) {
+		case "join":
+			doJoin();
+			break;
+		
+		default:
+			System.out.println("존재하지 않는 명령어 입니다");
+			break;
+		}
+	}
+	
+	private void doJoin() {
 		String loginId=null;
 		String loginPw=null;
 		String name = null;
@@ -53,7 +65,6 @@ public class MemberController {
 			
 		}
 		
-		
 		// 비밀번호 확인 검증
 		while(true) {
 			System.out.print("비밀번호 : ");
@@ -72,7 +83,6 @@ public class MemberController {
 				continue;
 			}	
 			break;
-			
 		}
 		
 		// 필수 입력 정보(공백 검증)
@@ -87,19 +97,20 @@ public class MemberController {
 			break;
 		}
 		
-		lastMemberId++;
+		lastId++;
 		
-		Member member = new Member(lastMemberId,Util.getDateStr(),loginId,loginPw,name);
+		Member member = new Member(lastId,Util.getDateStr(),loginId,loginPw,name);
 		members.add(member);
 		
 		System.out.println(name+"님이 가입되었습니다.");
 	}
 
+	@Override
 	public void makeTestData() {
 		// test Data
 		System.out.println("태스트용 회원 3개를 생성했습니다");
 		for(int i=1;i<=3;i++) {	
-			members.add(new Member(++lastMemberId,Util.getDateStr(),"test"+i,"test"+i,"user"+i));
+			members.add(new Member(++lastId,Util.getDateStr(),"test"+i,"test"+i,"user"+i));
 		}
 	}
 }
