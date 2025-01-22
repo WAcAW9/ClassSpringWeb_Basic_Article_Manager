@@ -51,6 +51,17 @@ public class App {
 			
 			Controller controller = null;
 			
+			if(controllerName.equals("member")) {
+				controller = memberController;
+			}else if(controllerName.equals("article")) {
+				controller=articleController;
+			}else {
+				System.out.println("존재하지 않는 명령어입니다");
+				continue;
+			}
+			
+			controller.doAction(cmd, methodName);
+			
 		} //while
 		
 		sc.close();
